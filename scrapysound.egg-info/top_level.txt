@@ -1,0 +1,2 @@
+scrapysound
+scrapysounds_task

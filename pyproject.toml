@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scrapysound"
+version = "0.1.0"
+description = "YouTube subtitle & audio toolkit — download, analyze phrases, extract clips. Powered by Gentle Shell."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Ricardo Ponce", email = "ricardoponces@gmail.com" }]
+keywords = ["youtube", "subtitles", "audio", "clips", "gentle-shell"]
+dependencies = []
+
+[project.scripts]
+scrapysound = "scrapysound.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scrapysound*"]

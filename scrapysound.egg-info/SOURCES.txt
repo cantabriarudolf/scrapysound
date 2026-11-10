@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+scrapysound/__init__.py
+scrapysound/analyzer.py
+scrapysound/cli.py
+scrapysound/downloader.py
+scrapysound/extractor.py
+scrapysound.egg-info/PKG-INFO
+scrapysound.egg-info/SOURCES.txt
+scrapysound.egg-info/dependency_links.txt
+scrapysound.egg-info/entry_points.txt
+scrapysound.egg-info/top_level.txt
+scrapysounds_task/tools/extract_phrase.py

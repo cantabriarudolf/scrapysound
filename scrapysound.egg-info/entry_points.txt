@@ -1,0 +1,2 @@
+[console_scripts]
+scrapysound = scrapysound.cli:main

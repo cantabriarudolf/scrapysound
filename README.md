@@ -1,5 +1,7 @@
 # scrapysound
 
+> **Powered by Gentle Shell** 🐚 — parte del multiverso de proyectos de Gentleman Programming.
+
 > Herramienta para descargar subtítulos y audio de videos de YouTube, estudiar las frases más usadas y extraer segmentos de audio por timestamp.
 
 ## ¿Qué es?
@@ -66,6 +68,10 @@ scrapysound/
 ## Caso de uso incluido: video de Gentle Shell
 
 Ver `scrapysounds_task/README.md`.
+
+## Conexión con el multiverso Gentle
+
+`scrapysound` alimenta al fork `gentle-emote-arcade`: las frases extraídas del streamer se asocian a los 14 estados auditivos de Gentle Shell (ver `scrapysounds_task/audio_event_mapping.md`).
 
 ## Licencia
 
