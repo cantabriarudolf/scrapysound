@@ -1,3 +1,4 @@
+import json
 import os, re, subprocess, shutil
 
 FFMPEG = shutil.which("ffmpeg") or "/home/sh1r0l0x/Descargas/jd2/tools/linux/ffmpeg/x64/ffmpeg"
@@ -39,7 +40,7 @@ def extract_segment(audio_path, start, end, out_path):
         raise RuntimeError(r.stderr[-500:])
     return out_path
 
-def extract_all_occurrences(srt_path, audio_path, phrase, outdir, context=0.3):
+def extract_all_occurrences(srt_path, audio_path, phrase, outdir, context=0.3, write_manifest=True):
     from .analyzer import parse_srt
     cues = parse_srt(srt_path)
     q = phrase.lower()
@@ -53,4 +54,45 @@ def extract_all_occurrences(srt_path, audio_path, phrase, outdir, context=0.3):
         out = os.path.join(outdir, f"{i:03d}_{safe}.mp3")
         extract_segment(audio_path, s, e, out)
         results.append((c, out))
-    return results
+    manifest_path = None
+    if write_manifest:
+        manifest_path = write_manifest_json(results, outdir)
+    return results, manifest_path
+
+
+def write_manifest_json(results, outdir):
+    """Write manifest.json: timestamp + text + clip file for programmatic use."""
+    os.makedirs(outdir, exist_ok=True)
+    items = []
+    for i, (c, path) in enumerate(results, 1):
+        items.append({
+            "index": i,
+            "file": os.path.basename(path),
+            "path": path,
+            "start": c["start"],
+            "end": c["end"],
+            "start_ts": c["start_ts"],
+            "end_ts": c["end_ts"],
+            "text": c["text"],
+        })
+    manifest_path = os.path.join(outdir, "manifest.json")
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+    return manifest_path
+
+
+def manifest_from_existing_clips(srt_path, phrase, outdir):
+    """Build manifest.json from already-extracted mp3s (matched by index prefix)."""
+    from .analyzer import parse_srt
+    import glob
+    cues = parse_srt(srt_path)
+    q = phrase.lower()
+    matches = [c for c in cues if q in c["text"].lower()]
+    mp3s = sorted(glob.glob(os.path.join(outdir, "*.mp3")))
+    results = []
+    for i, c in enumerate(matches, 1):
+        path = mp3s[i - 1] if i - 1 < len(mp3s) else None
+        if path is None:
+            break
+        results.append((c, path))
+    return results, write_manifest_json(results, outdir)

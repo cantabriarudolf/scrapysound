@@ -19,6 +19,12 @@ def cmd_analyze(args):
         for c in cues:
             print(f"{c['start_ts']} --> {c['end_ts']} | {c['text']}")
         return
+    if getattr(args, "rich", False):
+        from .rich_analysis import write_rich_report
+        outdir = args.outdir or "rich_out"
+        res = write_rich_report(srt, outdir)
+        print(f"Rich report -> {outdir} ({len(res['catchphrases'])} catchphrases)")
+        return
     out = args.out or "phrase_analysis.md"
     a = write_report(srt, out)
     print(f"Analyzed {a['cues']} cues, duration {a['duration']:.2f}s -> {out}")
@@ -26,13 +32,30 @@ def cmd_analyze(args):
 def cmd_extract(args):
     from .extractor import extract_segment, extract_all_occurrences, to_seconds
     if args.search:
-        results = extract_all_occurrences(args.srt, args.audio, args.search, args.outdir or "clips", args.context)
+        results, manifest = extract_all_occurrences(
+            args.srt, args.audio, args.search, args.outdir or "clips", args.context)
         print(f"Extracted {len(results)} clips -> {args.outdir or 'clips'}")
+        if manifest:
+            print(f"Manifest -> {manifest}")
     else:
         s = to_seconds(args.start); e = to_seconds(args.end)
         out = args.out or os.path.join(args.outdir or ".", "clip.mp3")
         extract_segment(args.audio, s, e, out)
         print(f"OK -> {out}")
+
+def cmd_manifest(args):
+    from .extractor import manifest_from_existing_clips
+    results, manifest = manifest_from_existing_clips(args.srt, args.phrase, args.outdir)
+    print(f"Manifest ({len(results)} entries) -> {manifest}")
+
+def cmd_map_sound(args):
+    from .integration import register_clip_as_notification
+    old, new = register_clip_as_notification(
+        args.clip, args.event, config_path=args.config, dry_run=args.dry_run)
+    if args.dry_run:
+        print(f"[dry-run] {args.event}: {old} -> {new}")
+    else:
+        print(f"Mapped {args.event}: {old} -> {new}")
 
 def cmd_all(args):
     from .downloader import download_all
@@ -69,6 +92,8 @@ def main():
     a.add_argument("srt")
     a.add_argument("-o", "--out")
     a.add_argument("--search")
+    a.add_argument("--rich", action="store_true", help="Rich report: wordcloud + timelines")
+    a.add_argument("--outdir", default="rich_out")
     a.set_defaults(func=cmd_analyze)
 
     e = sub.add_parser("extract", help="Extract audio clips")
@@ -81,6 +106,19 @@ def main():
     e.add_argument("--outdir", default=".")
     e.add_argument("--context", type=float, default=0.3)
     e.set_defaults(func=cmd_extract)
+
+    m = sub.add_parser("manifest", help="Build manifest.json from existing clips")
+    m.add_argument("--srt", required=True)
+    m.add_argument("--phrase", required=True)
+    m.add_argument("--outdir", required=True)
+    m.set_defaults(func=cmd_manifest)
+
+    ms = sub.add_parser("map-sound", help="Register a clip as Gentle Shell notification sound")
+    ms.add_argument("--clip", required=True)
+    ms.add_argument("--event", required=True)
+    ms.add_argument("--config", default=None)
+    ms.add_argument("--dry-run", action="store_true")
+    ms.set_defaults(func=cmd_map_sound)
 
     al = sub.add_parser("all", help="Full pipeline: download + analyze + extract")
     al.add_argument("url")

@@ -13,6 +13,9 @@ authors = [{ name = "Ricardo Ponce", email = "ricardoponces@gmail.com" }]
 keywords = ["youtube", "subtitles", "audio", "clips", "gentle-shell"]
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
 [project.scripts]
 scrapysound = "scrapysound.cli:main"
 

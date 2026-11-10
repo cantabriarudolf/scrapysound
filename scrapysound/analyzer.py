@@ -1,6 +1,6 @@
 import re, collections, os, glob
 
-def parse_srt(path):
+def parse_srt(path, use_clean=True):
     text = open(path, encoding="utf-8").read()
     blocks = re.split(r"\n\s*\n", text)
     cues = []
@@ -22,6 +22,9 @@ def parse_srt(path):
             continue
         cues.append({"start": tosec(m.group(1)), "end": tosec(m.group(2)),
                      "text": body, "start_ts": m.group(1), "end_ts": m.group(2)})
+    if use_clean:
+        from .cleaner import clean_cues
+        cues = clean_cues(cues)
     return cues
 
 def norm(s):
@@ -30,8 +33,8 @@ def norm(s):
     s = re.sub(r"\s+", " ", s).strip()
     return s
 
-def analyze(srt_path, top=20):
-    cues = parse_srt(srt_path)
+def analyze(srt_path, top=20, use_clean=True):
+    cues = parse_srt(srt_path, use_clean=use_clean)
     words = collections.Counter()
     bigrams = collections.Counter()
     trigrams = collections.Counter()
@@ -55,13 +58,13 @@ def analyze(srt_path, top=20):
         "full_repeats": [(p, n) for p, n in full.most_common(top) if n >= 3],
     }
 
-def find_phrase(srt_path, phrase):
-    cues = parse_srt(srt_path)
+def find_phrase(srt_path, phrase, use_clean=True):
+    cues = parse_srt(srt_path, use_clean=use_clean)
     q = phrase.lower()
     return [c for c in cues if q in c["text"].lower()]
 
-def write_report(srt_path, out_path):
-    a = analyze(srt_path)
+def write_report(srt_path, out_path, use_clean=True):
+    a = analyze(srt_path, use_clean=use_clean)
     lines = []
     lines.append("# Phrase analysis\n")
     lines.append(f"- Cues: {a['cues']}")
