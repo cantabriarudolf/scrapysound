@@ -1,0 +1,19 @@
+# Binarios pesados
+*.mp3
+*.wav
+*.webm
+*.m4a
+*.ogg
+
+# Clips generados
+work/video/clips/
+work/video/event_sounds/
+work/video/audio.mp3
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
