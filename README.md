@@ -1,11 +1,12 @@
 <p align="center">
-  <img src="assets/logo.svg" width="120" alt="scrapysound logo" />
+  <img src="assets/band.svg" alt="" width="100%">
 </p>
 
-# scrapysound
+<h1 align="center">scrapysound</h1>
 
 <p align="center">
-  <strong>Powered by Gentle Shell</strong> 🐚 — parte del multiverso de proyectos de Gentleman Programming.
+  <img alt="Licencia Apache-2.0" src="https://img.shields.io/badge/licencia-Apache--2.0-c0a062?labelColor=0a0a0b">
+  <img alt="Entorno" src="https://img.shields.io/badge/entorno-yt--dlp%20%2B%20ffmpeg-c9ccd1?labelColor=0a0a0b">
 </p>
 
 > Herramienta para descargar subtítulos y audio de videos de YouTube, estudiar las frases más usadas y extraer segmentos de audio por timestamp.
@@ -101,13 +102,13 @@ Ver `scrapysounds_task/README.md` — análisis de muletillas del streamer + map
 
 ## Licencia
 
-MIT — licencia colaborativa y permisiva: usá, modificá, distribuí y contribuí libremente. Ver [LICENSE](LICENSE).
+**Apache-2.0** — permisiva: usá, modificá, distribuí y contribuí libremente, con atribución y
+concesión explícita de patentes. Ver [LICENSE](LICENSE).
 
 El audio y subtítulos descargados pertenecen a sus respectivos autores (YouTube).
 
 ---
 
 <p align="center">
-  <img src="assets/logo.svg" width="60" alt="logo" /><br />
   <strong>Powered by Gentle Shell</strong> 🐚
 </p>
